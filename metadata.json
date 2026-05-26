@@ -1,0 +1,6 @@
+{
+  "name": "Kore Automação",
+  "description": "Catálogo online de equipamentos de automação comercial com foco em conversão via WhatsApp.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
