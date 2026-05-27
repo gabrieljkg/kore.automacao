@@ -11,16 +11,25 @@ import {
   ScanLine,
   Box,
   Cable,
-  Settings
+  Settings,
+  CreditCard
 } from 'lucide-react';
 import { categories, products as defaultProducts, generateWhatsAppLink } from './data';
 import { Product } from './types';
 import { AdminDialog } from './components/AdminDialog';
+import { CheckoutDialog } from './components/CheckoutDialog';
 import { supabase } from './lib/supabase';
 
 function App() {
   const [products, setProducts] = useState<Product[]>(defaultProducts);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [selectedCheckoutProduct, setSelectedCheckoutProduct] = useState<Product | null>(null);
+
+  const handleOpenCheckout = (product: Product) => {
+    setSelectedCheckoutProduct(product);
+    setIsCheckoutOpen(true);
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -208,15 +217,31 @@ function App() {
                             </div>
                           )}
 
-                          <a 
-                            href={generateWhatsAppLink(`Olá! Tenho interesse no produto: *${product.name}*${product.price && product.price !== 'Sob consulta' ? ` (${product.price})` : ''}. Pode me passar mais detalhes e o prazo de envio?`)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center justify-center gap-2 w-full px-4 py-3 bg-green-50 text-green-700 hover:bg-green-500 hover:text-white font-bold rounded-xl transition-colors shrink-0"
-                          >
-                            <MessageCircle className="w-5 h-5" />
-                            {product.price && product.price !== 'Sob consulta' ? 'Comprar Agora' : 'Consultar Preço'}
-                          </a>
+                          <div className="space-y-2 mt-auto shrink-0">
+                            {product.mercadoPagoLink && (
+                              <button
+                                onClick={() => handleOpenCheckout(product)}
+                                className="inline-flex items-center justify-center gap-2 w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-sm hover:shadow-md cursor-pointer"
+                              >
+                                <CreditCard className="w-5 h-5" />
+                                Pagar no Débito/Crédito
+                              </button>
+                            )}
+
+                            <a 
+                              href={generateWhatsAppLink(`Olá! Tenho interesse no produto: *${product.name}*${product.price && product.price !== 'Sob consulta' ? ` (${product.price})` : ''}. Pode me passar mais detalhes e o prazo de envio?`)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`inline-flex items-center justify-center gap-2 w-full px-4 py-3 font-bold rounded-xl transition-colors ${
+                                product.mercadoPagoLink 
+                                  ? 'bg-green-50 text-green-700 hover:bg-green-100 border border-green-250' 
+                                  : 'bg-green-50 text-green-700 hover:bg-green-500 hover:text-white'
+                              }`}
+                            >
+                              <MessageCircle className="w-5 h-5" />
+                              {product.price && product.price !== 'Sob consulta' && !product.mercadoPagoLink ? 'Comprar Agora' : 'Consultar Preço'}
+                            </a>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -298,6 +323,12 @@ function App() {
         onClose={() => setIsAdminOpen(false)} 
         products={products}
         onSave={handleSaveProducts}
+      />
+
+      <CheckoutDialog
+        isOpen={isCheckoutOpen}
+        onClose={() => setIsCheckoutOpen(false)}
+        product={selectedCheckoutProduct}
       />
     </div>
   );
