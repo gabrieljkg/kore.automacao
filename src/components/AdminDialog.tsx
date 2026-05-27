@@ -163,7 +163,17 @@ export function AdminDialog({ isOpen, onClose, products, onSave }: AdminDialogPr
                       <textarea
                         value={product.description}
                         onChange={(e) => handleChange(product.id, 'description', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none h-24 resize-none"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none h-20 resize-none mb-3"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Link de Pagamento Mercado Pago (Opcional - Ativa botão crédito/débito)</label>
+                      <input
+                        type="text"
+                        value={product.mercadoPagoLink || ''}
+                        onChange={(e) => handleChange(product.id, 'mercadoPagoLink', e.target.value)}
+                        placeholder="https://link.mercadopago.com.br/..."
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                       />
                     </div>
                   </div>
