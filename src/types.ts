@@ -5,6 +5,7 @@ export interface Product {
   imageUrl: string;
   category: string;
   price?: string;
+  mercadoPagoLink?: string;
 }
 
 export interface Category {
